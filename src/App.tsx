@@ -26,7 +26,7 @@ export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
   // APK Links
-  const apkUrl = "https://sdownload.s3.eu-central-003.backblazeb2.com/users/Qrk9zKDpLG0lY/ZNWYICcMkcgIOqz_1784454580.apk?response-content-disposition=attachment%3B%20filename%3D%22Zoya_V_4.6.apk%22&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=0031c3f441a07cd0000000001%2F20260719%2Feu-central-003%2Fs3%2Faws4_request&X-Amz-Date=20260719T101257Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Signature=5a4505f554ea20d357e5f65539c853a9c4471bb2122dd49c1fb0d21d1c72e2d6";
+  const apkUrl = "https://store8.gofile.io/download/web/48124779-a519-48e5-befa-f36a93de6eb7/Zoya_V_4.7.apk";
   const demoVideoUrl = "https://res.cloudinary.com/jeiv3ze2/video/upload/Untitled_video_oynwhq.mp4";
 
   // Synthesize sound for button clicks
@@ -85,7 +85,7 @@ export default function App() {
                 ZOYA AI
               </span>
               <span className="text-[9px] font-mono font-semibold text-zinc-500 ml-1.5 px-1 py-0.5 rounded bg-[#0f0f1a] border border-[#1a1a2e] uppercase">
-                v4.6
+                v4.7
               </span>
             </div>
           </div>
@@ -258,7 +258,7 @@ export default function App() {
                           <span>RELEASE BUILD</span>
                         </div>
                         <span className="text-xs font-mono text-cyan-400 font-bold bg-cyan-950/30 border border-cyan-800/30 px-2 py-0.5 rounded">
-                          v4.6 (Stable)
+                          v4.7 (Stable)
                         </span>
                       </div>
 
@@ -328,7 +328,7 @@ export default function App() {
                     Engineered to Dominate
                   </h2>
                   <p className="text-zinc-400 text-sm md:text-base font-sans">
-                    Zoya v4.6 is packed with dual architectures, local neural listeners, and smart accessibility interfaces that replace traditional tap-heavy flows with instant voice automation.
+                    Zoya v4.7 is packed with dual architectures, local neural listeners, and smart accessibility interfaces that replace traditional tap-heavy flows with instant voice automation.
                   </p>
                 </div>
 
@@ -494,7 +494,7 @@ export default function App() {
                       <div>$ zoya-wake --test</div>
                       <div className="text-cyan-400">[VOSK] Listening for 'Zoya' frequency bands [80-350Hz]</div>
                       <div className="text-purple-400">[GEMINI] Interactions API initialized server-side</div>
-                      <div>$ status --zoya-v4.6</div>
+                      <div>$ status --zoya-v4.7</div>
                       <div className="text-emerald-400">STATUS: CORE RUNNING OPTIMIZED ✓</div>
                     </div>
                   </div>
@@ -508,7 +508,7 @@ export default function App() {
                     Frequently Asked Questions
                   </h3>
                   <p className="text-zinc-500 text-xs md:text-sm font-sans mt-2">
-                    Everything you need to know about setting up and running Zoya v4.6 on your phone.
+                    Everything you need to know about setting up and running Zoya v4.7 on your phone.
                   </p>
                 </div>
 
@@ -573,7 +573,7 @@ export default function App() {
                     <div className="space-y-2">
                       <div className="text-xs font-mono font-bold text-cyan-400">STEP 1</div>
                       <h5 className="text-xs font-bold text-zinc-200">Download the APK</h5>
-                      <p className="text-[11px] text-zinc-500 leading-normal">Click the direct download button to save the Zoya_v4.6.apk package file to your phone.</p>
+                      <p className="text-[11px] text-zinc-500 leading-normal">Click the direct download button to save the Zoya_V_4.7.apk package file to your phone.</p>
                     </div>
 
                     <div className="space-y-2 border-t md:border-t-0 md:border-l border-[#1a1a2e] pt-4 md:pt-0 md:pl-6">
@@ -608,7 +608,7 @@ export default function App() {
       <footer className="bg-[#050508] border-t border-[#1a1a2e] py-10 mt-16 relative z-10">
         <div className="max-w-7xl mx-auto px-4 text-center font-mono text-[10px] text-zinc-600 space-y-2 select-none pointer-events-none">
           <p>© 2026 ZOYA AI SYSTEMS. ALL RIGHTS RESERVED.</p>
-          <p className="tracking-wide">COMPILATION BUILD 4.6.0-RELEASE • CORE INTELLIGENCE ARCHITECTURE</p>
+          <p className="tracking-wide">COMPILATION BUILD 4.7.0-RELEASE • CORE INTELLIGENCE ARCHITECTURE</p>
           <div className="flex justify-center gap-4 text-zinc-500 pt-1">
             <span>VOSK AI ENGINE</span>
             <span>•</span>
