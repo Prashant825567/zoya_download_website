@@ -27,7 +27,7 @@ export default function App() {
 
   // APK Links
   const apkUrl = "https://sdownload.s3.eu-central-003.backblazeb2.com/users/Qrk9zKDpLG0lY/ZNWYICcMkcgIOqz_1784454580.apk?response-content-disposition=attachment%3B%20filename%3D%22Zoya_V_4.6.apk%22&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=0031c3f441a07cd0000000001%2F20260719%2Feu-central-003%2Fs3%2Faws4_request&X-Amz-Date=20260719T101257Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Signature=5a4505f554ea20d357e5f65539c853a9c4471bb2122dd49c1fb0d21d1c72e2d6";
-  const demoVideoUrl = "https://store-na-phx-1.gofile.io/download/web/12ae9f6e-f460-4f35-9e47-a1752ea53c8a/Untitled%20video.mp4";
+  const demoVideoUrl = "https://res.cloudinary.com/jeiv3ze2/video/upload/Untitled_video_oynwhq.mp4";
 
   // Synthesize sound for button clicks
   const playClickSound = () => {
