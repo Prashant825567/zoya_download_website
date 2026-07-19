@@ -126,20 +126,24 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
           {/* Subtle Cybernetic Grid lines */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(18,18,30,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(18,18,30,0.08)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none z-10" />
 
-          {/* Actual Widescreen Video */}
+          {/* Actual Widescreen Video - Switches to a gorgeous tech fallback if Gofile redirects are blocked by browser */}
           <video
             ref={videoRef}
-            src={videoUrl}
+            src={hasError ? "https://assets.mixkit.co/videos/preview/mixkit-digital-circuit-board-lines-and-dots-background-40050-large.mp4" : videoUrl}
             className="w-full h-full object-cover pointer-events-none relative z-0"
             muted={true}
             loop={true}
             playsInline={true}
             controls={false} // Clean HUD styling with NO visible native controls timeline
             referrerPolicy="no-referrer"
+            onError={() => {
+              console.warn("Gofile redirect/hotlink detected or video load failed - playing aesthetic tech loop in background");
+              setHasError(true);
+            }}
           />
 
           {/* Interactive UI Screen Glow overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10 pointer-events-none z-10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/30 pointer-events-none z-10" />
 
           {/* Corner Tech Bracket Accents */}
           <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-cyan-500/30 pointer-events-none z-15" />
@@ -147,25 +151,52 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
           <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-cyan-500/30 pointer-events-none z-15" />
           <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-cyan-500/30 pointer-events-none z-15" />
 
-          {/* Center Overlay if not playing yet or error */}
+          {/* Center Overlay if Gofile redirect block is active */}
           {hasError && (
-            <div className="absolute inset-0 bg-[#050508]/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center z-20 gap-3">
-              <ShieldAlert className="w-12 h-12 text-purple-500 animate-pulse" />
-              <div className="space-y-1 max-w-md">
-                <p className="text-sm font-mono text-white font-bold">SYSTEM BROADCAST FALLBACK</p>
-                <p className="text-xs text-zinc-400 leading-relaxed">
-                  Autoplay restriction bypassed. Click below to view the original high-fidelity video stream directly.
-                </p>
+            <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px] flex flex-col items-center justify-center p-4 md:p-6 text-center z-20">
+              <div className="max-w-md w-full bg-[#050508]/90 border border-purple-500/40 p-5 md:p-6 rounded-2xl shadow-[0_0_30px_rgba(147,51,234,0.3)] space-y-4">
+                <div className="flex items-center justify-center gap-2 text-purple-400 font-mono text-xs font-bold uppercase tracking-wider">
+                  <ShieldAlert className="w-5 h-5 animate-pulse text-purple-500" />
+                  <span>[ALERT] GOFILE HOTLINK RESTRICTION DETECTED</span>
+                </div>
+                
+                <div className="space-y-2 text-left font-sans text-xs md:text-[13px] text-zinc-300 leading-relaxed border-t border-b border-[#1a1a2e] py-3">
+                  <p className="font-semibold text-cyan-400">
+                    Bhai, Gofile ek download platform hai jo direct play block karta hai aur session cookies verify karta hai. Isliye video direct nahi chal rahi hai.
+                  </p>
+                  <p className="text-zinc-400">
+                    Lekin iska sabse safe aur permanent solution bahut simple hai:
+                  </p>
+                  <ol className="list-decimal pl-4 space-y-1.5 text-zinc-400 text-xs">
+                    <li>Apni video file ko <strong className="text-zinc-200">Backblaze S3</strong> par upload kijiye (jahan aapki APK hosted hai).</li>
+                    <li>S3 ka direct MP4 link <strong className="text-zinc-200">App.tsx</strong> mein <code className="text-cyan-300">demoVideoUrl</code> ki jagah par daal dijiye.</li>
+                  </ol>
+                  <p className="text-[11px] text-purple-300 font-mono italic">
+                    * S3 direct links bina kisi delay ke hamare is cybernetic player me 100% automatic scroll play karengi!
+                  </p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-2.5 justify-center pt-1">
+                  <a
+                    href="https://gofile.io/d/d731deb8-38cc-45d7-8bbe-638c0316ac9a"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-xs font-mono font-bold text-white rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(147,51,234,0.3)]"
+                  >
+                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <span>WATCH VIDEO ON GOFILE</span>
+                  </a>
+                  <a
+                    href={videoUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-4 py-2 bg-[#0f0f1a] hover:bg-[#1a1a2e] text-xs font-mono text-zinc-400 hover:text-cyan-400 border border-[#1a1a2e] hover:border-cyan-500/40 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Maximize2 className="w-3.5 h-3.5" />
+                    <span>DIRECT STREAM LINK</span>
+                  </a>
+                </div>
               </div>
-              <a
-                href={videoUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="px-4 py-2 bg-[#0f0f1a] hover:bg-[#1a1a2e] text-xs font-mono text-cyan-400 border border-[#1a1a2e] hover:border-cyan-500/40 rounded-xl transition-all cursor-pointer flex items-center gap-2"
-              >
-                <Maximize2 className="w-3.5 h-3.5" />
-                <span>OPEN DEMO DIRECT STREAM</span>
-              </a>
             </div>
           )}
 
