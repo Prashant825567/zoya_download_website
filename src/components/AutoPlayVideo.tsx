@@ -8,7 +8,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
-import { Play, Sparkles, Eye, VideoOff, Layers, ShieldAlert, Cpu, Maximize2 } from 'lucide-react';
+import { Play, Sparkles, Eye, VideoOff, Layers, ShieldAlert, Cpu, Maximize2, Volume2 } from 'lucide-react';
 
 interface AutoPlayVideoProps {
   videoUrl: string;
@@ -22,10 +22,16 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
   const [isMuted, setIsMuted] = useState<boolean>(false);
 
   const handleContainerClick = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = false;
+    const video = videoRef.current;
+    if (video) {
+      video.muted = false;
       setIsMuted(false);
-      videoRef.current.play().catch((err) => console.warn('Interactive play failed:', err));
+      video.play()
+        .then(() => {
+          setIsPlaying(true);
+          setHasError(false);
+        })
+        .catch((err) => console.warn('Interactive play failed:', err));
     }
   };
 
@@ -33,8 +39,8 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
     const video = videoRef.current;
     if (!video) return;
 
-    // Direct configurations to attempt unmuted autoplay by default
-    video.muted = isMuted;
+    // Direct configurations to force unmuted playback attempts
+    video.muted = false;
     video.defaultMuted = false;
     video.playsInline = true;
     video.autoplay = true;
@@ -52,6 +58,8 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
         if (entry.isIntersecting) {
           // Restart video from beginning when it enters view
           video.currentTime = 0;
+          video.muted = false;
+          setIsMuted(false);
           
           const playPromise = video.play();
           if (playPromise !== undefined) {
@@ -61,16 +69,10 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
                 setHasError(false);
               })
               .catch((err) => {
-                console.warn('Autoplay prevented or failed:', err);
-                // Standard fallback (mute & play again)
-                video.muted = true;
-                setIsMuted(true);
-                video.play()
-                  .then(() => {
-                    setIsPlaying(true);
-                    setHasError(false);
-                  })
-                  .catch(() => setHasError(true));
+                console.warn('Autoplay prevented by browser security policy:', err);
+                // Do not fallback to muted autoplay. Instead, show the interactive click overlay so it plays with audio
+                setIsPlaying(false);
+                setHasError(false);
               });
           }
         } else {
@@ -196,17 +198,33 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
           )}
 
           {!isPlaying && !hasError && (
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px] flex flex-col items-center justify-center z-15 pointer-events-none">
-              <motion.div 
-                animate={{ scale: [1, 1.08, 1], opacity: [0.8, 1, 0.8] }} 
-                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                className="w-14 h-14 rounded-full bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center backdrop-blur-sm text-cyan-400"
-              >
-                <Play className="w-6 h-6 ml-1 fill-current" />
-              </motion.div>
-              <span className="text-[10px] font-mono text-zinc-400 mt-4 tracking-widest uppercase bg-black/75 border border-[#1a1a2e] px-3 py-1 rounded-md">
-                SCROLL INTO VIEW TO STREAM LIVE
-              </span>
+            <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px] flex flex-col items-center justify-center z-20 p-4 md:p-6 text-center select-none">
+              <div className="max-w-md w-full bg-[#050508]/90 border border-purple-500/30 p-5 md:p-6 rounded-2xl shadow-[0_0_30px_rgba(147,51,234,0.15)] space-y-4">
+                <div className="flex items-center justify-center gap-2 text-cyan-400 font-mono text-xs font-bold uppercase tracking-wider">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shrink-0" />
+                  <span>[SYSTEM READY] ZOYA ENGINE DEMO</span>
+                </div>
+                
+                <div className="space-y-2 text-center font-sans text-xs md:text-[13px] text-zinc-300 leading-relaxed border-t border-b border-[#1a1a2e] py-3">
+                  <p className="font-semibold text-white">
+                    Tap to play this demonstration with sound enabled.
+                  </p>
+                  <p className="text-zinc-400 text-xs">
+                    Modern browsers require a click to play video with audio. Tap anywhere on the player to activate.
+                  </p>
+                </div>
+
+                <div className="flex justify-center pt-1">
+                  <button
+                    onClick={handleContainerClick}
+                    className="px-5 py-2.5 bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 hover:from-purple-500 hover:to-cyan-500 text-xs font-mono font-bold text-white rounded-xl transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(147,51,234,0.3)] hover:shadow-[0_0_25px_rgba(6,182,212,0.4)] border border-purple-400/20 active:scale-95"
+                  >
+                    <Play className="w-3.5 h-3.5 fill-current text-white animate-pulse" />
+                    <Volume2 className="w-3.5 h-3.5 text-white animate-bounce" />
+                    <span>ACTIVATE VOICE DEMO</span>
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>
