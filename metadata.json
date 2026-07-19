@@ -1,0 +1,6 @@
+{
+  "name": "Zoya AI Assistant v4.6",
+  "description": "Official landing page for Zoya: India's first Hindi + English Voice AI Assistant with Gemini Live, 3D Neural Interface, and Complete Phone Automation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
