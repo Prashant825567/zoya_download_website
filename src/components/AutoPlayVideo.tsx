@@ -8,7 +8,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
-import { Play, Sparkles, Eye, VideoOff, Layers, ShieldAlert, Cpu, Maximize2, Volume2 } from 'lucide-react';
+import { Play, Sparkles, Eye, VideoOff, Layers, ShieldAlert, Cpu, Maximize2, Volume2, VolumeX } from 'lucide-react';
 
 interface AutoPlayVideoProps {
   videoUrl: string;
@@ -19,9 +19,35 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
-  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [isMuted, setIsMuted] = useState<boolean>(true); // Start MUTED by default to guarantee autoplay bypasses security policies
+  const [isPortrait, setIsPortrait] = useState<boolean>(true); // default to true since our active video is portrait
+
+  const handleLoadedMetadata = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const video = e.currentTarget;
+    if (video.videoHeight > video.videoWidth) {
+      setIsPortrait(true);
+    } else {
+      setIsPortrait(false);
+    }
+  };
 
   const handleContainerClick = () => {
+    const video = videoRef.current;
+    if (video) {
+      const newMuted = !isMuted;
+      video.muted = newMuted;
+      setIsMuted(newMuted);
+      video.play()
+        .then(() => {
+          setIsPlaying(true);
+          setHasError(false);
+        })
+        .catch((err) => console.warn('Interactive play failed:', err));
+    }
+  };
+
+  const unmuteAndPlay = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     const video = videoRef.current;
     if (video) {
       video.muted = false;
@@ -39,9 +65,8 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
     const video = videoRef.current;
     if (!video) return;
 
-    // Direct configurations to force unmuted playback attempts
-    video.muted = false;
-    video.defaultMuted = false;
+    // Direct configurations to force muted autoplay (this guarantees autoplay is NEVER blocked by browsers)
+    video.muted = isMuted;
     video.playsInline = true;
     video.autoplay = true;
     video.loop = true;
@@ -58,8 +83,7 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
         if (entry.isIntersecting) {
           // Restart video from beginning when it enters view
           video.currentTime = 0;
-          video.muted = false;
-          setIsMuted(false);
+          video.muted = isMuted;
           
           const playPromise = video.play();
           if (playPromise !== undefined) {
@@ -70,7 +94,7 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
               })
               .catch((err) => {
                 console.warn('Autoplay prevented by browser security policy:', err);
-                // Do not fallback to muted autoplay. Instead, show the interactive click overlay so it plays with audio
+                // If even muted autoplay is blocked (very rare), we show the interactive overlay
                 setIsPlaying(false);
                 setHasError(false);
               });
@@ -89,7 +113,7 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
     return () => {
       observer.disconnect();
     };
-  }, [videoUrl]);
+  }, [videoUrl, isMuted]);
 
   return (
     <div className="flex flex-col items-center justify-center py-12">
@@ -107,29 +131,33 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
         </p>
       </div>
 
-      {/* Cybernetic Widescreen Landscape Rectangular Player */}
+      {/* Cybernetic Adaptive Video Player */}
       <div 
         ref={containerRef}
         onClick={handleContainerClick}
-        className="w-full max-w-4xl aspect-video bg-[#050508] rounded-2xl border border-[#1a1a2e] shadow-[0_0_50px_rgba(6,182,212,0.12)] hover:shadow-[0_0_60px_rgba(147,51,234,0.18)] transition-all duration-700 relative overflow-hidden group flex flex-col justify-between cursor-pointer"
+        className={`w-full bg-[#050508] rounded-2xl border border-[#1a1a2e] shadow-[0_0_50px_rgba(6,182,212,0.12)] hover:shadow-[0_0_60px_rgba(147,51,234,0.18)] transition-all duration-700 relative overflow-hidden group flex flex-col justify-between cursor-pointer ${
+          isPortrait 
+            ? "max-w-[340px] sm:max-w-[365px] aspect-[9/16]" 
+            : "max-w-4xl aspect-video"
+        }`}
       >
         {/* Holographic Glowing Orbs around container */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-cyan-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-purple-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
 
         {/* High-tech Top Bezel Status Line */}
-        <div className="h-8 border-b border-[#1a1a2e] bg-[#0f0f1a]/85 backdrop-blur-md px-4 flex items-center justify-between z-20 select-none">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shrink-0" />
-            <span className="text-[10px] font-mono text-zinc-300 font-bold uppercase tracking-wider">
-              LIVE_FEED_PLAYER: zoya_engine_v4.6.0
+        <div className="h-8 border-b border-[#1a1a2e] bg-[#0f0f1a]/85 backdrop-blur-md px-3 sm:px-4 flex items-center justify-between z-20 select-none">
+          <div className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping shrink-0" />
+            <span className="text-[9px] sm:text-[10px] font-mono text-zinc-300 font-bold uppercase tracking-wider truncate max-w-[130px] sm:max-w-none">
+              {isPortrait ? "LIVE_FEED: ZOYA_V4.6" : "LIVE_FEED_PLAYER: ZOYA_ENGINE_V4.6.0"}
             </span>
           </div>
-          <div className="flex items-center gap-4 text-[9px] font-mono text-zinc-500">
-            <span className="hidden sm:inline">RESOLUTION: 1080P WIDESCREEN</span>
-            <div className="flex items-center gap-1.5">
-              <Cpu className="w-3 h-3 text-purple-400 animate-spin-slow" />
-              <span>DAEMON ONLINE</span>
+          <div className="flex items-center gap-2 sm:gap-4 text-[8px] sm:text-[9px] font-mono text-zinc-500">
+            <span>{isPortrait ? "1080x1920 PORTRAIT" : "RESOLUTION: 1080P WIDESCREEN"}</span>
+            <div className="flex items-center gap-1">
+              <Cpu className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-purple-400 animate-spin-slow" />
+              <span>LIVE</span>
             </div>
           </div>
         </div>
@@ -139,7 +167,7 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
           {/* Subtle Cybernetic Grid lines */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(18,18,30,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(18,18,30,0.08)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none z-10" />
 
-          {/* Actual Widescreen Video - Switches to a gorgeous tech fallback if stream loading fails */}
+          {/* Actual Video with Dynamic Aspect Ratio */}
           <video
             ref={videoRef}
             src={hasError ? "https://assets.mixkit.co/videos/preview/mixkit-digital-circuit-board-lines-and-dots-background-40050-large.mp4" : videoUrl}
@@ -149,6 +177,7 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
             playsInline={true}
             controls={false} // Clean HUD styling with NO visible native controls timeline
             referrerPolicy="no-referrer"
+            onLoadedMetadata={handleLoadedMetadata}
             onError={() => {
               console.warn("Cloudinary video stream failed to load - playing aesthetic tech loop in background");
               setHasError(true);
@@ -164,32 +193,62 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
           <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-cyan-500/30 pointer-events-none z-15" />
           <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-cyan-500/30 pointer-events-none z-15" />
 
-          {/* Center Overlay if Cloudinary stream fails */}
-          {hasError && (
-            <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px] flex flex-col items-center justify-center p-4 md:p-6 text-center z-20">
-              <div className="max-w-md w-full bg-[#050508]/90 border border-purple-500/40 p-5 md:p-6 rounded-2xl shadow-[0_0_30px_rgba(147,51,234,0.3)] space-y-4">
-                <div className="flex items-center justify-center gap-2 text-purple-400 font-mono text-xs font-bold uppercase tracking-wider">
-                  <ShieldAlert className="w-5 h-5 animate-pulse text-purple-500" />
-                  <span>[WARNING] STREAM CONGESTION DETECTED</span>
+          {/* Floating interactive unmute button overlay when actively playing but muted */}
+          {isPlaying && isMuted && !hasError && (
+            <div className="absolute inset-0 bg-black/45 backdrop-blur-[1.5px] flex flex-col items-center justify-center z-20 p-3 sm:p-4 text-center select-none">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="w-full max-w-[260px] bg-[#050508]/95 border border-cyan-500/30 p-4 rounded-2xl shadow-[0_0_20px_rgba(6,182,212,0.25)] space-y-3 pointer-events-auto"
+              >
+                <div className="flex items-center justify-center gap-1.5 text-cyan-400 font-mono text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">
+                  <VolumeX className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+                  <span>[VIDEO ACTIVE / AUDIO MUTED]</span>
                 </div>
                 
-                <div className="space-y-2 text-left font-sans text-xs md:text-[13px] text-zinc-300 leading-relaxed border-t border-b border-[#1a1a2e] py-3">
+                <p className="font-semibold text-zinc-200 text-[10px] sm:text-xs">
+                  Tap anywhere on the player to activate live voice stream with sound.
+                </p>
+
+                <div className="flex justify-center pt-1">
+                  <button
+                    onClick={unmuteAndPlay}
+                    className="w-full py-2 bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-[10px] sm:text-[11px] font-mono font-bold text-white rounded-xl transition-all duration-300 cursor-pointer flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(6,182,212,0.2)] hover:shadow-[0_0_20px_rgba(147,51,234,0.3)] border border-cyan-400/20 active:scale-95"
+                  >
+                    <Volume2 className="w-3.5 h-3.5 text-white animate-bounce" />
+                    <span>TAP TO UNMUTE VOICE</span>
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+
+          {/* Center Overlay if Cloudinary stream fails */}
+          {hasError && (
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-[3px] flex flex-col items-center justify-center p-3 sm:p-4 text-center z-20 select-none">
+              <div className="w-full max-w-[300px] bg-[#050508]/95 border border-purple-500/40 p-4 sm:p-5 rounded-2xl shadow-[0_0_20px_rgba(147,51,234,0.15)] space-y-3">
+                <div className="flex items-center justify-center gap-1.5 text-purple-400 font-mono text-[10px] sm:text-xs font-bold uppercase tracking-wider">
+                  <ShieldAlert className="w-4 h-4 animate-pulse text-purple-500 shrink-0" />
+                  <span>[STREAM ERROR]</span>
+                </div>
+                
+                <div className="space-y-1.5 text-left font-sans text-[11px] sm:text-xs text-zinc-300 leading-relaxed border-t border-b border-[#1a1a2e] py-2">
                   <p className="font-semibold text-cyan-400">
-                    High-fidelity video link is loaded, but could not play automatically.
+                    High-fidelity video loaded, but playback blocked.
                   </p>
-                  <p className="text-zinc-400">
-                    This can sometimes happen due to browser security settings, network congestion, or strict ad-blocker configurations.
+                  <p className="text-zinc-400 text-[10px] sm:text-xs">
+                    This can happen due to strict browser security or network congestion.
                   </p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-2.5 justify-center pt-1">
+                <div className="flex justify-center pt-1">
                   <a
                     href={videoUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-xs font-mono font-bold text-white rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(147,51,234,0.3)]"
+                    className="w-full py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-[11px] font-mono font-bold text-white rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(147,51,234,0.2)]"
                   >
-                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <Play className="w-3 h-3 fill-current" />
                     <span>OPEN DIRECT LINK</span>
                   </a>
                 </div>
@@ -198,29 +257,29 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
           )}
 
           {!isPlaying && !hasError && (
-            <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px] flex flex-col items-center justify-center z-20 p-4 md:p-6 text-center select-none">
-              <div className="max-w-md w-full bg-[#050508]/90 border border-purple-500/30 p-5 md:p-6 rounded-2xl shadow-[0_0_30px_rgba(147,51,234,0.15)] space-y-4">
-                <div className="flex items-center justify-center gap-2 text-cyan-400 font-mono text-xs font-bold uppercase tracking-wider">
-                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shrink-0" />
-                  <span>[SYSTEM READY] ZOYA ENGINE DEMO</span>
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-[3px] flex flex-col items-center justify-center z-20 p-3 sm:p-4 text-center select-none">
+              <div className="w-full max-w-[300px] bg-[#050508]/95 border border-purple-500/30 p-4 sm:p-5 rounded-2xl shadow-[0_0_20px_rgba(147,51,234,0.15)] space-y-3">
+                <div className="flex items-center justify-center gap-1.5 text-cyan-400 font-mono text-[10px] sm:text-xs font-bold uppercase tracking-wider">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping shrink-0" />
+                  <span>[SYSTEM READY] ZOYA DEMO</span>
                 </div>
                 
-                <div className="space-y-2 text-center font-sans text-xs md:text-[13px] text-zinc-300 leading-relaxed border-t border-b border-[#1a1a2e] py-3">
+                <div className="space-y-1.5 text-center font-sans text-[11px] sm:text-[12px] text-zinc-300 leading-relaxed border-t border-b border-[#1a1a2e] py-2">
                   <p className="font-semibold text-white">
-                    Tap to play this demonstration with sound enabled.
+                    Tap to play with voice enabled
                   </p>
-                  <p className="text-zinc-400 text-xs">
-                    Modern browsers require a click to play video with audio. Tap anywhere on the player to activate.
+                  <p className="text-zinc-400 text-[10px] sm:text-xs">
+                    Please tap anywhere on the player to activate live stream with direct audio.
                   </p>
                 </div>
 
                 <div className="flex justify-center pt-1">
                   <button
                     onClick={handleContainerClick}
-                    className="px-5 py-2.5 bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 hover:from-purple-500 hover:to-cyan-500 text-xs font-mono font-bold text-white rounded-xl transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(147,51,234,0.3)] hover:shadow-[0_0_25px_rgba(6,182,212,0.4)] border border-purple-400/20 active:scale-95"
+                    className="w-full py-2 bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 hover:from-purple-500 hover:to-cyan-500 text-[11px] font-mono font-bold text-white rounded-xl transition-all duration-300 cursor-pointer flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(147,51,234,0.2)] hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] border border-purple-400/20 active:scale-95"
                   >
-                    <Play className="w-3.5 h-3.5 fill-current text-white animate-pulse" />
-                    <Volume2 className="w-3.5 h-3.5 text-white animate-bounce" />
+                    <Play className="w-3 h-3 fill-current text-white animate-pulse" />
+                    <Volume2 className="w-3 h-3 text-white animate-bounce" />
                     <span>ACTIVATE VOICE DEMO</span>
                   </button>
                 </div>
@@ -230,7 +289,7 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
         </div>
 
         {/* High-tech Bottom Control Panel HUD bar */}
-        <div className="h-8 border-t border-[#1a1a2e] bg-[#0f0f1a]/85 backdrop-blur-md px-4 flex items-center justify-between z-20 select-none">
+        <div className="h-8 border-t border-[#1a1a2e] bg-[#0f0f1a]/85 backdrop-blur-md px-3 sm:px-4 flex items-center justify-between z-20 select-none">
           <div className="flex items-center gap-3">
             <span className="text-[9px] font-mono text-zinc-500 flex items-center gap-1.5">
               <Layers className="w-3.5 h-3.5 text-cyan-400" />
@@ -238,10 +297,21 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
             </span>
           </div>
           <div className="text-[9px] font-mono text-zinc-500 flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2 py-0.5">
-              <span>VOICE_STREAM: ACTIVE_LIVE</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            </div>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                const video = videoRef.current;
+                if (video) {
+                  const newMuted = !isMuted;
+                  video.muted = newMuted;
+                  setIsMuted(newMuted);
+                }
+              }}
+              className="flex items-center gap-1.5 px-2 py-0.5 rounded border border-[#1a1a2e] hover:border-cyan-500/20 bg-[#07070d] pointer-events-auto cursor-pointer hover:text-cyan-400 transition-colors"
+            >
+              <span>VOICE_STREAM: {isMuted ? "MUTED" : "ACTIVE_LIVE"}</span>
+              <span className={`w-1.5 h-1.5 rounded-full ${isMuted ? "bg-amber-500 animate-pulse" : "bg-emerald-500 animate-pulse"}`} />
+            </button>
           </div>
         </div>
       </div>
