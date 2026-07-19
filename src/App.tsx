@@ -26,7 +26,7 @@ export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
   // APK Links
-  const apkUrl = "https://store8.gofile.io/download/web/48124779-a519-48e5-befa-f36a93de6eb7/Zoya_V_4.7.apk";
+  const apkUrl = "https://docs.google.com/uc?export=download&id=1uMSg7df_mMxyG0TIqzX6JqWnE54o5lOV";
   const demoVideoUrl = "https://res.cloudinary.com/jeiv3ze2/video/upload/Untitled_video_oynwhq.mp4";
 
   // Synthesize sound for button clicks
