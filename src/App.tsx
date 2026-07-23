@@ -27,7 +27,7 @@ export default function App() {
 
   // APK Links
   const apkUrl = "https://docs.google.com/uc?export=download&id=1uMSg7df_mMxyG0TIqzX6JqWnE54o5lOV";
-  const demoVideoUrl = "https://res.cloudinary.com/jeiv3ze2/video/upload/Untitled_video_oynwhq.mp4";
+  const demoVideoUrl = "https://res.cloudinary.com/jeiv3ze2/video/upload/v1784806887/Untitled_video_3_ls9ybw.mp4";
 
   // Synthesize sound for button clicks
   const playClickSound = () => {
@@ -85,7 +85,7 @@ export default function App() {
                 ZOYA AI
               </span>
               <span className="text-[9px] font-mono font-semibold text-zinc-500 ml-1.5 px-1 py-0.5 rounded bg-[#0f0f1a] border border-[#1a1a2e] uppercase">
-                v4.7
+                v4.8
               </span>
             </div>
           </div>
@@ -258,7 +258,7 @@ export default function App() {
                           <span>RELEASE BUILD</span>
                         </div>
                         <span className="text-xs font-mono text-cyan-400 font-bold bg-cyan-950/30 border border-cyan-800/30 px-2 py-0.5 rounded">
-                          v4.7 (Stable)
+                          v4.8 (Stable)
                         </span>
                       </div>
 
@@ -328,7 +328,7 @@ export default function App() {
                     Engineered to Dominate
                   </h2>
                   <p className="text-zinc-400 text-sm md:text-base font-sans">
-                    Zoya v4.7 is packed with dual architectures, local neural listeners, and smart accessibility interfaces that replace traditional tap-heavy flows with instant voice automation.
+                    Zoya v4.8 is packed with dual architectures, local neural listeners, and smart accessibility interfaces that replace traditional tap-heavy flows with instant voice automation.
                   </p>
                 </div>
 
@@ -494,7 +494,7 @@ export default function App() {
                       <div>$ zoya-wake --test</div>
                       <div className="text-cyan-400">[VOSK] Listening for 'Zoya' frequency bands [80-350Hz]</div>
                       <div className="text-purple-400">[GEMINI] Interactions API initialized server-side</div>
-                      <div>$ status --zoya-v4.7</div>
+                      <div>$ status --zoya-v4.8</div>
                       <div className="text-emerald-400">STATUS: CORE RUNNING OPTIMIZED ✓</div>
                     </div>
                   </div>
@@ -508,7 +508,7 @@ export default function App() {
                     Frequently Asked Questions
                   </h3>
                   <p className="text-zinc-500 text-xs md:text-sm font-sans mt-2">
-                    Everything you need to know about setting up and running Zoya v4.7 on your phone.
+                    Everything you need to know about setting up and running Zoya v4.8 on your phone.
                   </p>
                 </div>
 
@@ -573,7 +573,7 @@ export default function App() {
                     <div className="space-y-2">
                       <div className="text-xs font-mono font-bold text-cyan-400">STEP 1</div>
                       <h5 className="text-xs font-bold text-zinc-200">Download the APK</h5>
-                      <p className="text-[11px] text-zinc-500 leading-normal">Click the direct download button to save the Zoya_V_4.7.apk package file to your phone.</p>
+                      <p className="text-[11px] text-zinc-500 leading-normal">Click the direct download button to save the Zoya_V_4.8.apk package file to your phone.</p>
                     </div>
 
                     <div className="space-y-2 border-t md:border-t-0 md:border-l border-[#1a1a2e] pt-4 md:pt-0 md:pl-6">
@@ -608,7 +608,7 @@ export default function App() {
       <footer className="bg-[#050508] border-t border-[#1a1a2e] py-10 mt-16 relative z-10">
         <div className="max-w-7xl mx-auto px-4 text-center font-mono text-[10px] text-zinc-600 space-y-2 select-none pointer-events-none">
           <p>© 2026 ZOYA AI SYSTEMS. ALL RIGHTS RESERVED.</p>
-          <p className="tracking-wide">COMPILATION BUILD 4.7.0-RELEASE • CORE INTELLIGENCE ARCHITECTURE</p>
+          <p className="tracking-wide">COMPILATION BUILD 4.8.0-RELEASE • CORE INTELLIGENCE ARCHITECTURE</p>
           <div className="flex justify-center gap-4 text-zinc-500 pt-1">
             <span>VOSK AI ENGINE</span>
             <span>•</span>

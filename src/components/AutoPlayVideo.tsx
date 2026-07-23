@@ -2,7 +2,7 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  * 
- * High-tech holographic rectangular video player for Zoya v4.6 demonstration.
+ * High-tech holographic rectangular video player for Zoya v4.8 demonstration.
  * Autoplays smoothly when in viewport, with full browser compatibility.
  */
 
@@ -121,10 +121,10 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
       <div className="text-center max-w-2xl mx-auto mb-10 space-y-3 px-4">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-950/30 border border-purple-500/30 text-purple-400 text-xs font-mono">
           <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-          <span>EXCLUSIVE SYSTEM DEMO [v4.7 BUILD]</span>
+          <span>EXCLUSIVE SYSTEM DEMO [v4.8 BUILD]</span>
         </div>
         <h3 className="text-3xl md:text-4xl font-display font-extrabold text-white tracking-tight">
-          Zoya v4.7 Live Feature Showcase
+          Zoya v4.8 Live Feature Showcase
         </h3>
         <p className="text-zinc-400 text-xs md:text-sm font-sans leading-relaxed">
           Observe Zoya’s offline voice trigger, automated WhatsApp control sequences, real-time context-aware vision, and screen interpretation loops in action.
@@ -150,7 +150,7 @@ export default function AutoPlayVideo({ videoUrl }: AutoPlayVideoProps) {
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping shrink-0" />
             <span className="text-[9px] sm:text-[10px] font-mono text-zinc-300 font-bold uppercase tracking-wider truncate max-w-[130px] sm:max-w-none">
-              {isPortrait ? "LIVE_FEED: ZOYA_V4.7" : "LIVE_FEED_PLAYER: ZOYA_ENGINE_V4.7.0"}
+              {isPortrait ? "LIVE_FEED: ZOYA_V4.8" : "LIVE_FEED_PLAYER: ZOYA_ENGINE_V4.8.0"}
             </span>
           </div>
           <div className="flex items-center gap-2 sm:gap-4 text-[8px] sm:text-[9px] font-mono text-zinc-500">
